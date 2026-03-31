@@ -36,38 +36,6 @@
       }
   });
   
-  $("#modal_trigger").leanModal({
-		top: 100,
-		overlay: 0.6,
-		closeButton: ".modal_close"
-});
-
-$(function() {
-		// Calling Login Form
-		$("#login_form").click(function() {
-				$(".social_login").hide();
-				$(".user_login").show();
-				return false;
-		});
-
-		// Calling Register Form
-		$("#register_form").click(function() {
-				$(".social_login").hide();
-				$(".user_register").show();
-				$(".header_title").text('Register');
-				return false;
-		});
-
-		// Going back to Social Forms
-		$(".back_btn").click(function() {
-				$(".user_login").hide();
-				$(".user_register").hide();
-				$(".social_login").show();
-				$(".header_title").text('Login');
-				return false;
-		});
-});
-
   // Acc
   $(document).on("click", ".naccs .menu div", function() {
     var numberIndex = $(this).index();
@@ -89,9 +57,13 @@ $(function() {
 
 	// Menu Dropdown Toggle
   if($('.menu-trigger').length){
-    $(".menu-trigger").on('click', function() { 
-      $(this).toggleClass('active');
-      $('.header-area .nav').slideToggle(200);
+    $(document).on('click', '.menu-trigger', function(e) { 
+      e.preventDefault();
+      var $trigger = $(this);
+      var $header = $trigger.closest('.header-area');
+      $trigger.toggleClass('active');
+      $header.toggleClass('menu-open');
+      $header.find('.nav').toggleClass('is-open');
     });
   }
 
@@ -105,7 +77,8 @@ $(function() {
         var width = $(window).width();
         if(width < 991) {
           $('.menu-trigger').removeClass('active');
-          $('.header-area .nav').slideUp(200);  
+          $('.header-area').removeClass('menu-open');
+          $('.header-area .nav').removeClass('is-open');
         }       
         $('html,body').animate({
           scrollTop: (target.offset().top) + 1
@@ -138,18 +111,59 @@ $(function() {
               $(document).on("scroll", onScroll);
           });
       });
+
+      // Certificate gallery with Fancybox
+      if (window.Fancybox) {
+        $("#certificate .pricing-item-regular img, #certificate .pricing-item-pro img").each(function () {
+          var $img = $(this);
+          if ($img.parent("a[data-fancybox='certificates']").length) {
+            return;
+          }
+
+          var imageSrc = $img.attr("src");
+          var imageAlt = $img.attr("alt") || "Certificate";
+          var $anchor = $("<a></a>")
+            .attr("href", imageSrc)
+            .attr("data-fancybox", "certificates")
+            .attr("data-caption", imageAlt)
+            .attr("aria-label", "View certificate image");
+
+          $img.wrap($anchor);
+        });
+
+        Fancybox.bind("[data-fancybox='certificates']", {
+          Thumbs: false,
+          Toolbar: {
+            display: {
+              left: [],
+              middle: [],
+              right: ["zoomIn", "zoomOut", "toggle1to1", "slideshow", "close"]
+            }
+          }
+        });
+      }
   });
 
   function onScroll(event){
       var scrollPos = $(document).scrollTop();
       $('.nav a').each(function () {
           var currLink = $(this);
-          var refElement = $(currLink.attr("href"));
+          var href = currLink.attr("href");
+
+          // Ignore non-anchor or placeholder links like "#"
+          if (!href || href === "#" || href.charAt(0) !== "#") {
+              return;
+          }
+
+          var refElement = $(href);
+          if (!refElement.length) {
+              return;
+          }
+
           if (refElement.position().top <= scrollPos && refElement.position().top + refElement.height() > scrollPos) {
               $('.nav ul li a').removeClass("active");
               currLink.addClass("active");
-          }
-          else{
+          } else {
               currLink.removeClass("active");
           }
       });
