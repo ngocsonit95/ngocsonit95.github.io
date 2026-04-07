@@ -569,14 +569,45 @@
         $img.wrap($anchor);
       });
 
-      Fancybox.bind("[data-fancybox='certificates']", {
-        Thumbs: false,
+      Fancybox.bind("[data-fancybox]", {
+        Carousel: {
+          transition: "slide",
+        },
         Toolbar: {
           display: {
-            left: [],
-            middle: [],
-            right: ["zoomIn", "zoomOut", "toggle1to1", "slideshow", "close"],
+            left: ["infobar"],
+            middle: [
+              "zoomIn",
+              "zoomOut",
+              "toggle1to1",
+              "rotateCCW",
+              "rotateCW",
+              "flipX",
+              "flipY",
+            ],
+            right: ["slideshow", "thumbs", "close"],
           },
+        },
+        Thumbs: {
+          autoStart: true,
+        },
+        Images: {
+          zoom: true,
+          Panzoom: {
+            maxScale: 2,
+          },
+        },
+        l10n: {
+          CLOSE: "Đóng",
+          NEXT: "Tiếp theo",
+          PREV: "Quay lại",
+          MODAL: "Bạn có thể đóng nội dung này bằng phím ESC",
+          ERROR: "Có lỗi xảy ra, vui lòng thử lại",
+          IMAGE_ERROR: "Không tìm thấy hình ảnh",
+          ELEMENT_NOT_FOUND: "Không tìm thấy nội dung HTML",
+          AJAX_NOT_FOUND: "Lỗi khi tải nội dung: Không tìm thấy (404)",
+          AJAX_FORBIDDEN: "Lỗi khi tải nội dung: Bị chặn (403)",
+          IFRAME_ERROR: "Lỗi khi tải trang",
         },
       });
     }
